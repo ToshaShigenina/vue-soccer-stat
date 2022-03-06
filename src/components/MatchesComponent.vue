@@ -120,6 +120,7 @@ export default {
     search () {
       this.$store.dispatch('loadMatches', { id: this.id, path: this.path, filters: `?dateFrom=${this.dateFrom}&dateTo=${this.dateTo}` })
       this.updatePage(1)
+      this.$route.query.page = 1
     }
   },
   created () {
