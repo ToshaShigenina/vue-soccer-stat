@@ -48,6 +48,7 @@ export default {
   width: auto;
   max-width: 100%;
   height: 100px;
+  margin: 0 auto;
   object-fit: contain;
   object-position: center center;
 }

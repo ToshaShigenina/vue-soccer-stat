@@ -21,7 +21,6 @@ export default new Vuex.Store({
     getCompetitions: state => search => {
       const searchStr = search.trim().toLowerCase()
       if (searchStr) {
-        console.log(state.count)
         return state.competitions.filter(item => item.name.toLowerCase().includes(searchStr) || item.area.name.toLowerCase().includes(searchStr))
       }
       return state.competitions

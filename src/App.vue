@@ -52,7 +52,6 @@ export default {
   methods: {
     toggleNavbar () {
       this.navbarVisibility = !this.navbarVisibility
-      console.log(this.navbarVisibility)
     }
   }
 }

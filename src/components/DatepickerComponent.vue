@@ -87,7 +87,6 @@ export default {
   },
   methods: {
     changeDate (value) {
-      console.log(value)
       this.$emit('input', value)
     }
   },

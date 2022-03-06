@@ -28,6 +28,10 @@ const routes = [
     path: '/commands/:id',
     props: true,
     component: () => import('../views/CommandsCalendarView.vue')
+  },
+  {
+    path: '*',
+    redirect: { name: 'leagues' }
   }
 ]
 
