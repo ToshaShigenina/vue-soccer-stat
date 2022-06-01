@@ -10,7 +10,7 @@
       />
     </div>
     <div class="col s2">
-      <label for="search" class="btn-flat btn-large search__btn" v-if="!value">
+      <label for="search" class="btn-flat btn-large search__btn" v-if="!value"  @click="enterSearch">
         <i class="material-icons">search</i>
       </label>
       <button class="btn-flat" v-else @click="clearSearch">
@@ -22,6 +22,11 @@
 
 <script>
 export default {
+  name: 'base-search',
+  model: {
+    prop: 'value',
+    event: 'input'
+  },
   props: {
     value: {
       type: String,
@@ -41,9 +46,9 @@ export default {
     },
     clearSearch () {
       this.inputSearch('')
+      this.enterSearch()
     }
-  },
-  name: 'search-component'
+  }
 }
 </script>
 

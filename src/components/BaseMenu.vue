@@ -1,6 +1,6 @@
 <template>
-  <ul>
-    <li v-for="link in links" :key="link.url" @click="$emit('toggle-sidebar')">
+  <ul @click.capture="$emit('click')">
+    <li v-for="link in links" :key="link.url">
       <router-link :to="'/' + link.url">{{ link.text }}</router-link>
     </li>
   </ul>
@@ -8,13 +8,21 @@
 
 <script>
 export default {
-  props: {
-    links: {
-      type: Array,
-      required: true
+  name: 'base-menu',
+  data () {
+    return {
+      links: [
+        {
+          url: 'leagues',
+          text: 'Лиги'
+        },
+        {
+          url: 'commands',
+          text: 'Команды'
+        }
+      ]
     }
-  },
-  name: 'menu-component'
+  }
 }
 </script>
 

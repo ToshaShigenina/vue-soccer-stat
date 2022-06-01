@@ -1,21 +1,21 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
+import api from '../services/api'
+
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    token: process.env.VUE_APP_API_KEY,
-    api: 'https://api.football-data.org/v2/',
+    competitions: [],
+    teams: [],
+    matches: [],
     loadCompetitions: false,
     loadTeams: false,
     loadMatches: false,
     loadingError: false,
     pageSize: 12,
-    count: 0,
-    competitions: [],
-    teams: [],
-    matches: []
+    count: 0
   },
   getters: {
     getCompetitions: state => search => {
@@ -39,7 +39,9 @@ export default new Vuex.Store({
         start = ((page - 1) * state.pageSize)
         end += start
       }
-      return getters.getCompetitions(search).slice(start, end)
+      const result = getters.getCompetitions(search)
+      state.count = result.length
+      return result.slice(start, end)
     },
     getTeamsPerPage: (state, getters) => (page, search) => {
       let start = 0
@@ -48,7 +50,9 @@ export default new Vuex.Store({
         start = ((page - 1) * state.pageSize)
         end += start
       }
-      return getters.getTeams(search).slice(start, end)
+      const result = getters.getTeams(search)
+      state.count = result.length
+      return result.slice(start, end)
     },
     getMatchesPerPage: state => page => {
       let start = 0
@@ -61,6 +65,9 @@ export default new Vuex.Store({
     },
     getPages (state) {
       return Math.ceil(state.count / state.pageSize)
+    },
+    getCount (state) {
+      return state.count
     }
   },
   mutations: {
@@ -72,86 +79,92 @@ export default new Vuex.Store({
     },
     setMatches (state, data) {
       state.matches = data
+    },
+    setCount (state, count) {
+      state.count = count
     }
   },
   actions: {
-    loadCompetitions ({ state, commit }) {
+    processingData (_, { data, processing }) {
+      console.log(data)
+      if (data.errorCode) {
+        throw new Error(data.message)
+      } else {
+        processing(data)
+      }
+    },
+    /* Competitions */
+    processingCompetitions ({ state, commit, dispatch }, data) {
+      dispatch('processingData', {
+        data,
+        processing (data) {
+          commit('setCompetitions', data.competitions)
+          state.loadCompetitions = true
+        }
+      })
+    },
+    catchErrorComprtitions ({ state, commit }, e) {
+      console.error(e)
+      commit('setCompetitions', [])
+      state.loadingError = true
+    },
+    loadCompetitions ({ state, dispatch }, query) {
       state.loadingError = false
       state.loadCompetitions = false
-      state.count = 0
-      fetch(state.api + 'competitions', {
-        method: 'GET',
-        headers: {
-          'X-Auth-Token': state.token
+      api.getCompetitions(query)
+        .then(data => dispatch('processingCompetitions', data))
+        .catch(e => dispatch('catchErrorComprtitions', e))
+    },
+    /* Teams */
+    processingTeams ({ state, commit, dispatch }, data) {
+      dispatch('processingData', {
+        data,
+        processing (data) {
+          commit('setTeams', data.teams)
+          state.loadTeams = true
         }
       })
-        .then(response => response.json())
-        .then(data => {
-          if (data.errorCode) {
-            throw new Error(data.message)
-          } else {
-            commit('setCompetitions', data.competitions)
-            state.count = data.count
-            state.loadCompetitions = true
-          }
-        })
-        .catch(e => {
-          console.error(e)
-          commit('setCompetitions', [])
-          state.loadingError = true
-        })
     },
-    loadTeams ({ state, commit }) {
+    catchErrorTeams ({ state, commit }, e) {
+      console.error(e)
+      commit('setTeams', [])
+      state.loadingError = true
+    },
+    loadTeams ({ state, dispatch }, query) {
       state.loadingError = false
       state.loadTeams = false
-      state.count = 0
-      fetch(state.api + 'teams', {
-        method: 'GET',
-        headers: {
-          'X-Auth-Token': state.token
+      api.getTeams(query)
+        .then(data => dispatch('processingTeams', data))
+        .catch(e => dispatch('catchErrorTeams', e))
+    },
+    /* Matches */
+    processingMatches ({ state, commit, dispatch }, data) {
+      dispatch('processingData', {
+        data,
+        processing (data) {
+          commit('setMatches', data.matches)
+          state.loadMatches = true
         }
       })
-        .then(response => response.json())
-        .then(data => {
-          if (data.errorCode) {
-            throw new Error(data.message)
-          } else {
-            commit('setTeams', data.teams)
-            state.count = data.count
-            state.loadTeams = true
-          }
-        })
-        .catch(e => {
-          console.error(e)
-          commit('setTeams', [])
-          state.loadingError = true
-        })
     },
-    loadMatches ({ state, commit }, { id, path = 'competitions', filters = '' }) {
+    catchErrorMatches ({ state, commit }, e) {
+      console.error(e)
+      commit('setMatches', [])
+      state.loadingError = true
+    },
+    loadCompetitionsMatches ({ state, dispatch }, { id, query }) {
       state.loadingError = false
       state.loadMatches = false
-      state.count = 0
-      fetch(state.api + `${path}/${id}/matches${filters}`, {
-        method: 'GET',
-        headers: {
-          'X-Auth-Token': state.token
-        }
-      })
-        .then(response => response.json())
-        .then(data => {
-          if (data.errorCode) {
-            throw new Error(data.message)
-          } else {
-            commit('setMatches', data.matches)
-            state.count = data.count
-            state.loadMatches = true
-          }
-        })
-        .catch(e => {
-          commit('setMatches', [])
-          state.loadingError = true
-          console.error(e)
-        })
+      api.getCompetitionMatches(id, query)
+        .then(data => dispatch('processingMatches', data))
+        .catch(e => dispatch('catchErrorMatches', e))
+    },
+    loadTeamsMatches ({ state, dispatch }, { id, query }) {
+      state.loadingError = false
+      state.loadMatches = false
+      api.getTeamMatches(id, query)
+        .then(data => dispatch('processingMatches', data))
+        .catch(e => dispatch('catchErrorMatches', e))
     }
   }
 })

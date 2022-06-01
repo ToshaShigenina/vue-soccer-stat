@@ -60,7 +60,7 @@
 </template>
 
 <script>
-import breadcrumbComponent from './BreadcrumbComponent.vue'
+import breadcrumbComponent from './BaseBreadcrumb.vue'
 import datepickerComponent from './DatepickerComponent.vue'
 import tableComponent from './TableComponent.vue'
 import paginationComponent from './PaginationComponent.vue'

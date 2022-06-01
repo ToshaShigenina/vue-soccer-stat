@@ -26,7 +26,7 @@ export default {
       default: ''
     }
   },
-  name: 'search-component'
+  name: 'card-component'
 }
 </script>
 

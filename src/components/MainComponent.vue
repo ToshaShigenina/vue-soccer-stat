@@ -2,7 +2,10 @@
   <section class="section">
     <div class="row" v-if="load && !loadingError">
       <div class="col m6 l5">
-        <search-component v-model.trim="search"/>
+        <search-component
+          v-model.trim="search"
+          @search="enterSearch"
+        />
       </div>
     </div>
 
@@ -12,25 +15,15 @@
           v-if="count"
           :data="data"
           :path="home"/>
-        <div class="row" v-if="!count && search.trim()">
-          <div class="col s12">
-            <p>Ничего не найдено</p>
-          </div>
+        <base-not-found v-else-if="!count && search.trim()" />
+        <div v-else>
+          <p>{{ count }}</p>
+          <p>{{ search.trim() }}</p>
         </div>
       </div>
-      <div class="row" v-else>
-        <div class="col s12">
-          <p>
-            Подождите, данные загружаются...
-          </p>
-        </div>
-      </div>
+      <base-loader v-else />
     </div>
-    <div class="row" v-else>
-      <div class="col s12">
-        <p>Что-то пошло не так, данные не загружены. Попробуйте обновить страницу позже.</p>
-      </div>
-    </div>
+    <base-error v-else />
 
     <pagination-component
       v-if="load && (count > pageSize)"
@@ -42,23 +35,33 @@
 </template>
 
 <script>
-import searchComponent from './SearchComponent.vue'
-import paginationComponent from './PaginationComponent.vue'
-import collectionComponent from './CollectionComponent.vue'
+import SearchComponent from './BaseSearch.vue'
+import PaginationComponent from './PaginationComponent.vue'
+import CollectionComponent from './CollectionComponent.vue'
+import BaseNotFound from './BaseNotFound.vue'
+import BaseLoader from './BaseLoader.vue'
+import BaseError from './BaseError.vue'
 
 export default {
   components: {
-    'search-component': searchComponent,
-    'pagination-component': paginationComponent,
-    'collection-component': collectionComponent
+    BaseNotFound,
+    BaseLoader,
+    BaseError,
+    SearchComponent,
+    PaginationComponent,
+    CollectionComponent
   },
   props: {
     path: {
       type: String,
-      require: true
+      required: true
     },
     home: {
       type: String
+    },
+    data: {
+      type: Array,
+      required: true
     }
   },
   data () {
@@ -74,14 +77,8 @@ export default {
       }
       return this.$store.state.loadTeams
     },
-    data () {
-      if (this.path === 'competitions') {
-        return this.$store.getters.getCompetitionsPerPage(this.page, this.search)
-      }
-      return this.$store.getters.getTeamsPerPage(this.page, this.search)
-    },
     count () {
-      return this.$store.state.count
+      return this.$store.getters.getCount
     },
     pages () {
       return this.$store.getters.getPages
@@ -96,14 +93,12 @@ export default {
   methods: {
     updatePage (page) {
       this.page = page
+    },
+    enterSearch () {
+      console.log(this.search)
     }
   },
   created () {
-    if (this.path === 'competitions') {
-      this.$store.dispatch('loadCompetitions')
-    } else {
-      this.$store.dispatch('loadTeams')
-    }
     if (this.$route.query && !isNaN(+this.$route.query.page)) this.page = +this.$route.query.page
   }
 }

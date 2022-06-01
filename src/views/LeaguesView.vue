@@ -1,15 +1,23 @@
 <template>
   <div id="commands">
-    <main-component path="competitions" home="leagues"/>
+    <main-component path="competitions" home="leagues" :data="competitions"/>
   </div>
 </template>
 
 <script>
-import mainComponent from '../components/MainComponent.vue'
+import MainComponent from '../components/MainComponent.vue'
 
 export default {
   components: {
-    'main-component': mainComponent
+    MainComponent
+  },
+  computed: {
+    competitions () {
+      return this.$store.getters.getCompetitions('')
+    }
+  },
+  created () {
+    this.$store.dispatch('loadCompetitions')
   }
 }
 </script>
