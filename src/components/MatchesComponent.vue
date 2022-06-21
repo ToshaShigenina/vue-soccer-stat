@@ -2,6 +2,7 @@
   <section class="section">
     <breadcrumb-component :links="links" />
     <h1>Матчи</h1>
+
     <div class="row" v-if="load && !loadingError">
       <div class="col l3 m4 s12">
         <datepicker-component
@@ -61,9 +62,9 @@
 
 <script>
 import breadcrumbComponent from './BaseBreadcrumb.vue'
-import datepickerComponent from './DatepickerComponent.vue'
+import datepickerComponent from './BaseDatepicker.vue'
 import tableComponent from './TableComponent.vue'
-import paginationComponent from './PaginationComponent.vue'
+import paginationComponent from './BasePagination.vue'
 
 export default {
   components: {

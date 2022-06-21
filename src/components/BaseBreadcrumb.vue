@@ -1,8 +1,8 @@
 <template>
   <nav>
-    <ul>
-      <li class="breadcrumb" v-for="(link, index) in links" :key="'link' + index">
-        <router-link v-if="link.url" :to="link.url">
+    <ul v-if="links.length">
+      <li class="breadcrumb" v-for="(link, i) in links" :key="i">
+        <router-link v-if="link.path" :to="{ path: link.path, query: { page: link.page } }">
           {{ link.name }}
         </router-link>
         <span v-else>{{ link.name }}</span>
@@ -13,14 +13,13 @@
 
 <script>
 export default {
+  name: 'base-breadcrumb',
   props: {
     links: {
       type: Array,
-      default: null
+      default: () => []
     }
-  },
-  methods: {},
-  name: 'breadcrumb-component'
+  }
 }
 </script>
 

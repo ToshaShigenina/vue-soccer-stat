@@ -1,23 +1,49 @@
 <template>
-  <div id="commands">
-    <main-component path="competitions" home="leagues" :data="competitions"/>
+  <div id="leagues">
+    <base-content
+      v-model="search"
+      :data="data"
+      :count="count"
+      :error="error"
+      :load="load"
+      :search="search"
+    />
   </div>
 </template>
 
 <script>
-import MainComponent from '../components/MainComponent.vue'
+import BaseContent from '../components/BaseMainPageContent.vue'
 
 export default {
   components: {
-    MainComponent
+    BaseContent
+  },
+  data () {
+    return {
+      search: ''
+    }
   },
   computed: {
-    competitions () {
-      return this.$store.getters.getCompetitions('')
+    data () {
+      return this.$store.getters.getFilteredCompetitions(this.search, this.page)
+    },
+    count () {
+      return this.$store.getters.getCompetitionsCount
+    },
+    page () {
+      return this.$store.getters.getPage
+    },
+    error () {
+      return this.$store.state.loadingError
+    },
+    load () {
+      return this.$store.state.loadCompetitions
     }
   },
   created () {
-    this.$store.dispatch('loadCompetitions')
+    if (!this.data.length) {
+      this.$store.dispatch('loadCompetitions')
+    }
   }
 }
 </script>

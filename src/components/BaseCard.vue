@@ -12,6 +12,7 @@
 
 <script>
 export default {
+  name: 'base-card',
   props: {
     title: {
       type: String,
@@ -25,19 +26,11 @@ export default {
       type: String,
       default: ''
     }
-  },
-  name: 'card-component'
+  }
 }
 </script>
 
 <style scoped>
-.search__btn {
-  padding: 0;
-}
-.search__btn:hover,
-.search__btn:active {
-  background-color: transparent;
-}
 .card-title {
   margin-top: 0;
 }

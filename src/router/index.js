@@ -12,22 +12,27 @@ const routes = [
   {
     path: '/leagues',
     name: 'leagues',
+    meta: {
+      title: 'Лиги'
+    },
     component: LeaguesView
-  },
-  {
-    path: '/leagues/:id',
-    props: true,
-    component: () => import('../views/LeaguesCalendarView.vue')
   },
   {
     path: '/commands',
     name: 'commands',
+    meta: {
+      title: 'Команды'
+    },
     component: () => import('../views/CommandsView.vue')
   },
   {
-    path: '/commands/:id',
-    props: true,
-    component: () => import('../views/CommandsCalendarView.vue')
+    path: '/matches/:id',
+    name: 'matches',
+    meta: {
+      title: 'Матчи'
+    },
+    component: () => import('../views/CalendarView.vue'),
+    props: true
   },
   {
     path: '*',

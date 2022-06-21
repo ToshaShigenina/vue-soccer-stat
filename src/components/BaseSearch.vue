@@ -3,17 +3,30 @@
     <div class="input-field col s10">
       <input
         type="search"
+        id="search"
         :placeholder="placeholder"
         :value="value"
+        :disabled="disabled"
         @input="inputSearch($event.target.value)"
         @keypress.enter="enterSearch"
       />
     </div>
     <div class="col s2">
-      <label for="search" class="btn-flat btn-large search__btn" v-if="!value"  @click="enterSearch">
+      <label
+        v-if="!value"
+        :class="{ disabled: disabled }"
+        for="search"
+        class="btn-flat btn-large search__btn"
+        @click="enterSearch"
+      >
         <i class="material-icons">search</i>
       </label>
-      <button class="btn-flat" v-else @click="clearSearch">
+      <button
+        v-else
+        :class="{ disabled: disabled }"
+        class="btn-flat"
+        @click="clearSearch"
+      >
         <i class="material-icons">close</i>
       </button>
     </div>
@@ -35,6 +48,10 @@ export default {
     placeholder: {
       type: String,
       default: 'Введите текст'
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   methods: {
