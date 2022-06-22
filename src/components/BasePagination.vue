@@ -21,7 +21,7 @@
     >
       <button @click="toPage(2)">2</button>
     </li>
-    <li v-if="(pages >= 7) && (page > 4)">
+    <li v-if="(pages >= 6) && (page > 4)">
       <span class="pagination__dots">...</span>
     </li>
     <li

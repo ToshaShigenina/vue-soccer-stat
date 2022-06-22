@@ -25,6 +25,7 @@
         :disabled="!(value.dateFrom && value.dateTo)"
         type="button"
         class="btn-flat waves-effect waves-teal"
+        @click="search"
       >
         <i class="material-icons">search</i>
       </button>
@@ -33,16 +34,16 @@
 </template>
 
 <script>
-import BaseDatepicker from './BaseDatepicker.vue'
+import BaseDatepicker from "./BaseDatepicker.vue";
 
 export default {
-  name: 'base-date-range-picker',
+  name: "base-date-range-picker",
   model: {
-    prop: 'value',
-    event: 'change'
+    prop: "value",
+    event: "change",
   },
   components: {
-    BaseDatepicker
+    BaseDatepicker,
   },
   props: {
     value: {
@@ -50,28 +51,35 @@ export default {
       default: () => {
         return {
           dateFrom: null,
-          dateTo: null
-        }
+          dateTo: null,
+        };
       },
       validator: (value) => {
-        const keys = Object.keys(value)
+        const keys = Object.keys(value);
         return (
           keys.length === 2 &&
-          keys.includes('dateFrom') &&
-          keys.includes('dateTo')
-        )
-      }
-    }
+          keys.includes("dateFrom") &&
+          keys.includes("dateTo")
+        );
+      },
+    },
   },
   methods: {
-    changeDate (key, value) {
-      const modifyValue = { ...this.value }
-      modifyValue[key] = value
-      this.$emit('change', modifyValue)
+    changeDate(key, value) {
+      const modifyValue = { ...this.value };
+      modifyValue[key] = value;
+      this.$emit("change", modifyValue);
     },
-    clear () {
-      this.changeDate()
-    }
-  }
-}
+    clear() {
+      const modifyValue = { ...this.value };
+      for (const key in modifyValue) {
+        modifyValue[key] = "";
+      }
+      this.$emit("change", modifyValue);
+    },
+    search() {
+      this.$emit("search");
+    },
+  },
+};
 </script>

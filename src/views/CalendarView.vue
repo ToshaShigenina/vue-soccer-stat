@@ -3,40 +3,19 @@
     <base-breadcrumb :links="links" />
     <h1>Матчи</h1>
 
-    <div class="row" v-if="!error && load">
-      <div class="col l3 m4 s12">
-        <base-datepicker
-          v-model="dateFrom"
-          placeholder="Дата начала периода"
-        />
-      </div>
-      <div class="col l3 m4 s12">
-        <base-datepicker
-          v-model="dateTo"
-          placeholder="Дата окончания периода"
-        />
-      </div>
-      <div class="col l2 m3 s12">
-        <button type="button" class="btn-flat waves-effect waves-teal" @click="search" :disabled="!(dateFrom && dateTo)">
-          <i class="material-icons">search</i>
-        </button>
-      </div>
-    </div>
-
-    <base-date-range-picker v-model="period"/>
+    <!-- <div class="row" v-if="!error && load"> -->
+    <base-date-range-picker v-model="period" @search="search"/>
 
   </div>
 </template>
 
 <script>
 import BaseBreadcrumb from '../components/BaseBreadcrumb.vue'
-import BaseDatepicker from '../components/BaseDatepicker.vue'
 import BaseDateRangePicker from '../components/BaseDateRangePicker.vue'
 
 export default {
   components: {
     BaseBreadcrumb,
-    BaseDatepicker,
     BaseDateRangePicker
   },
   props: {
@@ -54,8 +33,6 @@ export default {
   data () {
     return {
       links: [],
-      dateFrom: '',
-      dateTo: '',
       period: {
         dateFrom: '',
         dateTo: ''
@@ -81,19 +58,43 @@ export default {
       return this.$store.getters.getMatchesCount
     },
     data () {
-      return this.$store.getters.getFilteredMatches(this.page)
+      return this.$store.getters.getMatchesData
     },
     pageSize () {
       return this.$store.state.pageSize
     }
   },
+  methods: {
+    search() {
+      console.log(this.period)
+    }
+  },
   created () {
+    /* if(this.parent) {
+      switch(this.parent.name) {
+        case 'Лиги':
+          this.$store.dispatch('loadCompetitionsMatches', { id: this.id, query: {} });
+          break;
+        case 'Команды':
+          this.$store.dispatch('loadTeamsMatches', { id: this.id, query: {} });
+          break;
+      }
+    } else {
+      this.$store.dispatch('loadTeamsMatches', { id: this.id, query: {} })
+    } */
+    
     if (!this.links.length) {
       this.links = []
     }
     if (this.parent && this.name) {
       this.links.push(this.parent)
       this.links.push({ name: this.name })
+    } else {
+      this.links.push({
+        name: 'Лиги',
+        path: '/leagues',
+        page: 1
+      })
     }
   }
 }

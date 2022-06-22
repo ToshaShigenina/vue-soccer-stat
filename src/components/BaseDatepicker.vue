@@ -25,7 +25,8 @@ export default {
     return {
       picker: null,
       options: {
-        autoClose: true,
+        autoClose: false,
+        showClearBtn: true,
         format: 'yyyy-mm-dd',
         i18n: {
           cancel: 'Закрыть',
