@@ -11,7 +11,7 @@
     </div>
 
     <div v-if="!error && load">
-      <base-collection v-if="data.length" :data="data" />
+      <base-collection v-if="data.length" :data="data" :name="name" />
       <base-not-found v-else />
     </div>
     <base-loader v-else-if="!error && !load" />
@@ -48,6 +48,10 @@ export default {
     event: 'input'
   },
   props: {
+    name: {
+      type: String,
+      required: true
+    },
     data: {
       type: Array,
       required: true

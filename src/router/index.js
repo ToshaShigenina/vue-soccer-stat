@@ -26,12 +26,21 @@ const routes = [
     component: () => import('../views/CommandsView.vue')
   },
   {
-    path: '/matches/:id',
-    name: 'matches',
+    path: '/command-matches/:id',
+    name: 'command-matches',
     meta: {
-      title: 'Матчи'
+      title: 'Матчи команды'
     },
-    component: () => import('../views/CalendarView.vue'),
+    component: () => import('../views/CommandMatchesView.vue'),
+    props: true
+  },
+  {
+    path: '/league-matches/:id',
+    name: 'league-matches',
+    meta: {
+      title: 'Матчи лиги'
+    },
+    component: () => import('../views/LeagueMatchesView.vue'),
     props: true
   },
   {

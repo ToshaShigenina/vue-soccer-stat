@@ -7,43 +7,44 @@
       :error="error"
       :load="load"
       :search="search"
+      name="command-matches"
     />
   </div>
 </template>
 
 <script>
-import BaseContent from '../components/BaseMainPageContent.vue'
+import BaseContent from "../components/BaseMainPageContent.vue";
 
 export default {
   components: {
-    BaseContent
+    BaseContent,
   },
-  data () {
+  data() {
     return {
-      search: ''
-    }
+      search: "",
+    };
   },
   computed: {
-    data () {
-      return this.$store.getters.getFilteredTeams(this.search, this.page)
+    data() {
+      return this.$store.getters.getTeamsFiltered(this.search, this.page);
     },
-    count () {
-      return this.$store.getters.getTeamsCount
+    count() {
+      return this.$store.getters.getTeamsCount;
     },
-    page () {
-      return this.$store.getters.getPage
+    page() {
+      return this.$store.getters.getPage;
     },
-    error () {
-      return this.$store.state.loadingError
+    error() {
+      return this.$store.state.loadingError;
     },
-    load () {
-      return this.$store.state.loadTeams
+    load() {
+      return this.$store.state.teams.loadTeams;
+    },
+  },
+  created() {
+    if (!this.data.length) {
+      this.$store.dispatch("loadTeams");
     }
   },
-  created () {
-    if (!this.data.length) {
-      this.$store.dispatch('loadTeams')
-    }
-  }
-}
+};
 </script>

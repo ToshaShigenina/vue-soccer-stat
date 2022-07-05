@@ -76,6 +76,7 @@ export default {
         modifyValue[key] = "";
       }
       this.$emit("change", modifyValue);
+      this.search();
     },
     search() {
       this.$emit("search");
