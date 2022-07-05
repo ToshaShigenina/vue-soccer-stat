@@ -1,7 +1,6 @@
 <template>
   <div id="command-calendar">
     <base-matches-content
-      :data="data"
       :links="links"
       @change-period="changePeriod"
     />
