@@ -25,6 +25,9 @@ export default {
     };
   },
   computed: {
+    title() {
+      return `SoccerStat - ${this.$route.meta.title}`;
+    },
     data() {
       return this.$store.getters.getTeamsFiltered(this.search, this.page);
     },
@@ -41,7 +44,14 @@ export default {
       return this.$store.state.teams.loadTeams;
     },
   },
+  methods: {
+    changeTitle() {
+      document.title = this.title;
+    },
+  },
   created() {
+    this.changeTitle();
+    this.$store.state.loadingError = false;
     if (!this.data.length) {
       this.$store.dispatch("loadTeams");
     }

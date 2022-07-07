@@ -25,6 +25,9 @@ export default {
     };
   },
   computed: {
+    title() {
+      return `SoccerStat - ${this.$route.meta.title}`;
+    },
     data() {
       return this.$store.getters.getCompetitionsFiltered(
         this.search,
@@ -44,7 +47,14 @@ export default {
       return this.$store.state.competitions.loadCompetitions;
     },
   },
+  methods: {
+    changeTitle() {
+      document.title = this.title;
+    },
+  },
   created() {
+    this.changeTitle();
+    this.$store.state.loadingError = false;
     if (!this.data.length) {
       this.$store.dispatch("loadCompetitions");
     }

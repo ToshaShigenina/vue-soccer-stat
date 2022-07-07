@@ -30,8 +30,8 @@ export default {
   methods: {
     toggleNavbar () {
       this.navbarVisibility = !this.navbarVisibility
-    }
-  }
+    },
+  },
 }
 </script>
 

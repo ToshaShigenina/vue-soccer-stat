@@ -10,110 +10,98 @@
       </div>
     </div>
 
-    <div v-if="!error && load">
-      <base-collection v-if="data.length" :data="data" :name="name" />
-      <base-not-found v-else />
-    </div>
-    <base-loader v-else-if="!error && !load" />
-    <base-error v-else />
-
-    <base-pagination
-      v-if="data.length"
+    <base-content
+      :length="data.length"
       :count="count"
-      :page="page"
+      :load="load"
       @to-page="toPage"
-    />
+    >
+      <base-collection :data="data" :name="name" />
+    </base-content>
   </section>
 </template>
 
 <script>
-import BaseSearch from './BaseSearch.vue'
-import BasePagination from './BasePagination.vue'
-import BaseCollection from './BaseCollection.vue'
-import BaseNotFound from './BaseNotFound.vue'
-import BaseLoader from './BaseLoader.vue'
-import BaseError from './BaseError.vue'
+import BaseSearch from "./BaseSearch.vue";
+import BaseCollection from "./BaseCollection.vue";
+import BaseContent from "./BaseContent.vue";
 
 export default {
   components: {
-    BaseNotFound,
-    BaseLoader,
-    BaseError,
     BaseSearch,
-    BasePagination,
-    BaseCollection
+    BaseCollection,
+    BaseContent,
   },
   model: {
-    prop: 'search',
-    event: 'input'
+    prop: "search",
+    event: "input",
   },
   props: {
     name: {
       type: String,
-      required: true
+      required: true,
     },
     data: {
       type: Array,
-      required: true
+      required: true,
     },
     count: {
       type: Number,
-      required: true
+      required: true,
     },
     search: {
       type: String,
-      default: ''
-    },
-    error: {
-      type: Boolean,
-      required: true
+      default: "",
     },
     load: {
       type: Boolean,
-      required: true
-    }
+      required: true,
+    },
   },
   computed: {
-    page: {
-      get () {
-        return this.$store.getters.getPage
-      },
-      set (page) {
-        this.$store.commit('setPage', page)
-      }
+    error() {
+      return this.$store.state.loadingError;
     },
-    pageSize () {
-      return this.$store.getters.getPageSize
-    }
+    page: {
+      get() {
+        return this.$store.getters.getPage;
+      },
+      set(page) {
+        this.$store.commit("setPage", page);
+      },
+    },
+    pageSize() {
+      return this.$store.getters.getPageSize;
+    },
   },
   methods: {
-    toPage (page, search) {
-      this.page = page
-      if (search !== undefined) this.$emit('input', search)
-      this.pushQuery(search)
+    toPage(page, search) {
+      if (page !== this.page) this.page = page;
+      if (search !== undefined) this.$emit("input", search);
+      this.pushQuery(search);
     },
-    pushQuery (search) {
-      const query = {}
+    pushQuery(search) {
+      const query = {};
       if (this.page) {
-        query.page = this.page
+        query.page = this.page;
       }
       if (search) {
-        query.search = search
+        query.search = search;
       } else {
-        delete query.search
+        delete query.search;
       }
-      this.$router.push({ query })
-    }
+      this.$router.push({ query });
+    },
   },
-  created () {
+  created() {
     if (this.$route.query.search) {
-      this.$emit('input', this.$route.query.search)
+      this.$emit("input", this.$route.query.search);
     }
     if (this.$route.query.page) {
-      this.page = +this.$route.query.page
+      this.page = +this.$route.query.page;
     } else {
-      this.page = 1
+      this.page = 1;
     }
-  }
-}
+  },
+};
 </script>

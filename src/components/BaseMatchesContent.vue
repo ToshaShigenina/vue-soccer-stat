@@ -10,19 +10,14 @@
       @clear="search"
     />
 
-    <div v-if="!error && load">
-      <base-table v-if="data.length" :data="data" />
-      <base-not-found v-else />
-    </div>
-    <base-loader v-else-if="!error && !load" />
-    <base-error v-else />
-
-    <base-pagination
-      v-if="data.length"
+    <base-content
+      :length="data.length"
       :count="count"
-      :page="page"
+      :load="load"
       @to-page="toPage"
-    />
+    >
+      <base-table :data="data" />
+    </base-content>
   </section>
 </template>
 
@@ -30,20 +25,14 @@
 import BaseBreadcrumb from "../components/BaseBreadcrumb.vue";
 import BaseDateRangePicker from "../components/BaseDateRangePicker.vue";
 import BaseTable from "../components/BaseTable.vue";
-import BasePagination from "../components/BasePagination.vue";
-import BaseLoader from "../components/BaseLoader.vue";
-import BaseNotFound from "../components/BaseNotFound.vue";
-import BaseError from "../components/BaseError.vue";
+import BaseContent from "../components/BaseContent.vue";
 
 export default {
   components: {
     BaseBreadcrumb,
     BaseDateRangePicker,
     BaseTable,
-    BasePagination,
-    BaseLoader,
-    BaseNotFound,
-    BaseError,
+    BaseContent,
   },
   props: {
     links: {
@@ -69,9 +58,6 @@ export default {
     load() {
       return this.$store.state.matches.loadMatches;
     },
-    error() {
-      return this.$store.state.loadingError;
-    },
     page: {
       get() {
         return this.$store.getters.getPage;
@@ -82,6 +68,9 @@ export default {
     },
     count() {
       return this.$store.getters.getMatchesCount;
+    },
+    error() {
+      return this.$store.state.loadingError;
     },
     query() {
       const query = {};

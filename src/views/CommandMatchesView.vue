@@ -40,6 +40,9 @@ export default {
     };
   },
   computed: {
+    title() {
+      return `SoccerStat - ${this.$route.meta.title} - ${this.name}`;
+    },
     name() {
       return this.$store.getters.getTeamName;
     },
@@ -52,6 +55,9 @@ export default {
     }
   },
   methods: {
+    changeTitle() {
+      document.title = this.title;
+    },
     changePeriod(period) {
       this.period = period;
       this.loadTeams();
@@ -70,6 +76,8 @@ export default {
     },
   },
   created() {
+    this.changeTitle();
+    this.$store.state.loadingError = false;
     this.loadTeam();
     this.loadTeams();
     if (this.parentPage > 1) {

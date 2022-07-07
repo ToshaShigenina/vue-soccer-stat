@@ -1,9 +1,6 @@
 <template>
   <div id="league-calendar">
-    <base-matches-content
-      :links="links"
-      @change-period="changePeriod"
-    />
+    <base-matches-content :links="links" @change-period="changePeriod" />
   </div>
 </template>
 
@@ -40,6 +37,9 @@ export default {
     };
   },
   computed: {
+    title() {
+      return `SoccerStat - ${this.$route.meta.title} - ${this.name}`;
+    },
     name() {
       return this.$store.getters.getCompetitionName;
     },
@@ -49,9 +49,12 @@ export default {
       if (name && name !== oldName) {
         this.links.push({ name });
       }
-    }
+    },
   },
   methods: {
+    changeTitle() {
+      document.title = this.title;
+    },
     changePeriod(period) {
       this.period = period;
       this.loadCompetitions();
@@ -70,6 +73,8 @@ export default {
     },
   },
   created() {
+    this.changeTitle();
+    this.$store.state.loadingError = false;
     this.loadCompetition();
     this.loadCompetitions();
     if (this.parentPage > 1) {
